@@ -6,15 +6,13 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import Head from "next/head";
 import { getProviders, signIn } from "next-auth/react";
-import HeaderLink from "../component/HeaderLink";
+import HeaderLink from "../components/HeaderLink";
+import HeadTag from "../components/HeadTag";
 
 function Home({ providers }) {
   return (
     <div className="space-y-10 relative">
-      <Head>
-        <title>LinkedIn</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <HeadTag titl="Home" />
       <header className="flex justify-around items-center py-4">
         <div className="relative w-36 h-10">
           <Image
@@ -68,7 +66,7 @@ function Home({ providers }) {
           </div>
         </div>
 
-        <div className="relative  w-80 h-80 xl:w-[650px] xl:h-[650px] top-14 right-5">
+        <div className="relative xl:absolute w-80 h-80 xl:w-[650px] xl:h-[650px] top-14 right-5">
           <Image src="https://rb.gy/vkzpzt" layout="fill" priority alt="" />
         </div>
       </main>
@@ -80,6 +78,7 @@ export default Home;
 
 export async function getServerSideProps(context) {
   const providers = await getProviders();
+
   return {
     props: {
       providers,
