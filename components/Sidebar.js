@@ -6,6 +6,7 @@ import { AddRounded } from "@mui/icons-material";
 
 function Sidebar() {
   const { data: session } = useSession();
+
   return (
     <div className="space-y-2 min-w-max mx-w-lg">
       {/* Top */}
@@ -20,7 +21,7 @@ function Sidebar() {
         />
         <div className="mt-5 py-4 space-y-0.5">
           <h4 className="hover:underline decoration-purple-700 underline-offset-1 cursor-pointer">
-            Coach Hamza
+            {session?.user?.name}
           </h4>
           <p className="text-black/60 dark:text-white/75 text-sm">
             {session?.user?.email}

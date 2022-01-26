@@ -4,7 +4,6 @@ import GroupIcon from "@mui/icons-material/Group";
 import OndemandVideoSharpIcon from "@mui/icons-material/OndemandVideoSharp";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
-import Head from "next/head";
 import { getProviders, signIn } from "next-auth/react";
 import HeaderLink from "../components/HeaderLink";
 import HeadTag from "../components/HeadTag";
