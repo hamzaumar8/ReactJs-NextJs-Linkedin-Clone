@@ -7,6 +7,14 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import { useState } from "react";
 import { getPostState } from "../atoms/modalPost";
 import { useSession } from "next-auth/react";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
+import ThumbUpOffAltRoundedIcon from "@mui/icons-material/ThumbUpOffAltRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
+import TimeAgo from "timeago-react";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import Comment from "./Post/Comment";
 
 function Post({ post, modalPost }) {
   const { data: session } = useSession();
@@ -15,24 +23,41 @@ function Post({ post, modalPost }) {
   const [postState, setPostState] = useRecoilState(getPostState);
   const [showInput, setShowInput] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [commentSec, setCommentSec] = useState(false);
 
   const truncate = (string, n) =>
     string?.length > n ? string.substr(0, n - 1) + "...see more" : string;
+
+  const deletePost = async () => {
+    // const response = await fetch(`/api/posts/${post._id}`, {
+    //   method: "DELETE",
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    // setHandlePost(true);
+    // setModalOpen(false);
+  };
 
   return (
     <div
       className={`bg-white dark:bg-[#1D2226] ${
         modalPost ? "rounded-r-lg" : "rounded-lg"
-      } space-y-2 py-2.5 border border-gray-300 dark:border-none`}
+      } space-y-2 py-2.5 border border-gray-300 dark:border-none transition ease-out`}
     >
       <div className="flex items-center px-2.5 cursor-pointer">
-        <Avatar className="!h-10 !w-10 cursor-pointer" />
+        <Avatar
+          src={session?.user?.image}
+          className="!h-10 !w-10 cursor-pointer"
+        />
         <div className="mr-auto ml-2 leading-none">
           <h6 className="font-medium hover:text-blue-500 hover:underline">
             {post.username}
           </h6>
           <p className="text-sm dark:text-white/75 opacity-80">{post.email}</p>
           {/* Timestamp */}
+          <TimeAgo
+            datetime={post.createdAt}
+            className="text-xs dark:text-white/75 opacity-80"
+          />
         </div>
         {modalPost ? (
           <IconButton onClick={() => setModalOpen(false)}>
@@ -67,6 +92,63 @@ function Post({ post, modalPost }) {
           }}
         />
       )}
+      <div className="flex justify-between items-center mx-2.5 pt-2 cursor-pointer text-black/60 dark:text-white/75 !text-sm">
+        <div> likes</div>
+        <div className="hover:text-blue-500 hover:underline">5 comments</div>
+      </div>
+      <div className="flex justify-evenly items-center dark:border-t border-gray-600/80 mx-2.5 pt-2 text-black/60 dark:text-white/75">
+        {/* {modalPost ? (
+          <button className="postButton">
+            <CommentOutlinedIcon />
+            <h4>Comment</h4>
+          </button>
+        ) : ( */}
+        <button
+          className={`postButton ${liked && "text-blue-500"}`}
+          onClick={() => setLiked(!liked)}
+        >
+          {liked ? (
+            <ThumbUpOffAltRoundedIcon className="-scale-x-100" />
+          ) : (
+            <ThumbUpOffAltOutlinedIcon className="-scale-x-100" />
+          )}
+          <h4>Like</h4>
+        </button>
+        {/* )} */}
+
+        <button
+          className={`postButton ${
+            commentSec && "bg-black/10 dark:bg-black/20"
+          }`}
+          onClick={() => setCommentSec(!commentSec)}
+        >
+          <CommentOutlinedIcon />
+          <h4>Comment</h4>
+        </button>
+
+        {session?.user?.email === post.email ? (
+          <button
+            className="postButton focus:text-red-400"
+            onClick={deletePost}
+          >
+            <DeleteRoundedIcon />
+            <h4>Delete</h4>
+          </button>
+        ) : (
+          <button className="postButton ">
+            <ReplyRoundedIcon className="-scale-x-100" />
+            <h4>Share</h4>
+          </button>
+        )}
+        <button className="postButton focus:text-red-400" onClick={deletePost}>
+          <SendRoundedIcon />
+          <h4>Send</h4>
+        </button>
+      </div>
+
+      {/* {commentSec && <Comment />} */}
+      {/* TODO:: overflow-y scrollable on modal pop up */}
+      {modalPost && <Comment />}
     </div>
   );
 }

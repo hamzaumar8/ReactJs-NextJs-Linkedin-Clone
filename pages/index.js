@@ -25,7 +25,7 @@ export default function Home({ posts }) {
   });
 
   return (
-    <div className="bg-[#F3F2EF] dark:bg-black dark:text-white h-screen overflow-y-scroll md:space-y-6">
+    <div className="bg-[#F3F2EF] dark:bg-black dark:text-white h-screen overflow-y-scroll space-y-4 md:space-y-6">
       <HeadTag title="Feed" />
 
       <Header />
@@ -34,11 +34,11 @@ export default function Home({ posts }) {
         <div className="flex flex-col md:flex-row gap-x-5 gap-5">
           {/* SideBar */}
           <Sidebar />
+          {/* feed */}
+          <Feed posts={posts} />
         </div>
-        {/* feed */}
-        <Feed posts={posts} />
         {/* widget */}
-        <div>widget</div>
+        {/* <div>widget</div> */}
 
         {/* Modal */}
         <AnimatePresence>
