@@ -5,7 +5,7 @@ import { modalState, modalTypeState } from "../atoms/modalAtom";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import { useState } from "react";
-import { getPostState } from "../atoms/modalPost";
+import { getPostState, handlePostState } from "../atoms/modalPost";
 import { useSession } from "next-auth/react";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
@@ -21,6 +21,7 @@ function Post({ post, modalPost }) {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [modalType, setModalType] = useRecoilState(modalTypeState);
   const [postState, setPostState] = useRecoilState(getPostState);
+  const [handlePost, setHandlePost] = useRecoilState(handlePostState);
   const [showInput, setShowInput] = useState(false);
   const [liked, setLiked] = useState(false);
   const [commentSec, setCommentSec] = useState(false);
@@ -29,12 +30,12 @@ function Post({ post, modalPost }) {
     string?.length > n ? string.substr(0, n - 1) + "...see more" : string;
 
   const deletePost = async () => {
-    // const response = await fetch(`/api/posts/${post._id}`, {
-    //   method: "DELETE",
-    //   headers: { "Content-Type": "application/json" },
-    // });
-    // setHandlePost(true);
-    // setModalOpen(false);
+    const response = await fetch(`/api/posts/${post._id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+    setHandlePost(true);
+    setModalOpen(false);
   };
 
   return (
@@ -148,7 +149,8 @@ function Post({ post, modalPost }) {
 
       {/* {commentSec && <Comment />} */}
       {/* TODO:: overflow-y scrollable on modal pop up */}
-      {modalPost && <Comment />}
+      {modalPost && <Comment modalPost />}
+      {!modalPost && commentSec && <Comment />}
     </div>
   );
 }

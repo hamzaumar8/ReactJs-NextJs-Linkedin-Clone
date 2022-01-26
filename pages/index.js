@@ -8,10 +8,11 @@ import Header from "../components/Header";
 import HeadTag from "../components/HeadTag";
 import Modal from "../components/Modal";
 import Sidebar from "../components/Sidebar";
+import Widgets from "../components/Widgets";
 import { connectToDatabase } from "../util/mongodb";
 
 // Client
-export default function Home({ posts }) {
+export default function Home({ posts, articles }) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [modalType, setModalType] = useRecoilState(modalTypeState);
@@ -38,7 +39,7 @@ export default function Home({ posts }) {
           <Feed posts={posts} />
         </div>
         {/* widget */}
-        {/* <div>widget</div> */}
+        <Widgets articles={articles} />
 
         {/* Modal */}
         <AnimatePresence>
@@ -72,9 +73,15 @@ export async function getServerSideProps(context) {
     .sort({ timestamp: -1 })
     .toArray();
 
+  // Get News API
+  const results = await fetch(
+    `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`
+  ).then((res) => res.json());
+
   return {
     props: {
       session,
+      articles: results.articles,
       posts: posts.map((post) => ({
         _id: post._id.toString(),
         input: post.input,

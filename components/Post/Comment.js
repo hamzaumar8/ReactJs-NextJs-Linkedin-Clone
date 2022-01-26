@@ -4,7 +4,7 @@ import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
 import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
 import { useState } from "react";
 
-function Comment() {
+function Comment({ modalPost }) {
   const { data: session } = useSession();
 
   const [input, setInput] = useState("");
