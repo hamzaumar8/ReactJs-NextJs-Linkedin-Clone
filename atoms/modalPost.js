@@ -14,3 +14,13 @@ export const useSSRPostsState = atom({
   key: "useSSRPostsState",
   default: true,
 });
+
+export const useSSRCommentsState = atom({
+  key: "useSSRCommentsState",
+  default: true,
+});
+
+export const handleCommentState = atom({
+  key: "handleCommentState",
+  default: false,
+});

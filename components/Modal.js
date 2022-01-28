@@ -89,7 +89,7 @@ const Modal = ({ handleClose, type }) => {
       {type === "gifYouUp" && (
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          className="rounded-l-lg flex flex-col md:flex-row bg-[#1D2226] w-full max-w-6xl -mt-[7vh] mx-6"
+          className="rounded-lg md:rounded-r-none flex flex-col md:flex-row bg-[#1D2226] w-full max-w-6xl -mt-[7vh] mx-6 overflow-hidden"
           variants={gifYouUp}
           initial="hidden"
           animate="visible"
@@ -99,9 +99,9 @@ const Modal = ({ handleClose, type }) => {
             alt=""
             onDoubleClick={handleClose}
             src={post.photoUrl}
-            className="object-contain max-h-[80vh] w-full max-w-3xl rounded-l-lg"
+            className="object-contain max-h-[80vh] w-full max-w-3xl"
           />
-          <div className="w-full md:w-3/5 bg-white dark:bg-[#1D2226] rounded-r-lg">
+          <div className="w-full md:w-3/5 bg-white dark:bg-[#1D2226]">
             <Post post={post} modalPost />
           </div>
         </motion.div>

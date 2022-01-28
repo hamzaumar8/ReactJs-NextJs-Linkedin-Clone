@@ -12,7 +12,7 @@ import Widgets from "../components/Widgets";
 import { connectToDatabase } from "../util/mongodb";
 
 // Client
-export default function Home({ posts, articles }) {
+export default function Home({ posts, articles, comments }) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [modalType, setModalType] = useRecoilState(modalTypeState);
@@ -36,7 +36,7 @@ export default function Home({ posts, articles }) {
           {/* SideBar */}
           <Sidebar />
           {/* feed */}
-          <Feed posts={posts} />
+          <Feed posts={posts} comments={comments} />
         </div>
         {/* widget */}
         <Widgets articles={articles} />
@@ -73,6 +73,13 @@ export async function getServerSideProps(context) {
     .sort({ timestamp: -1 })
     .toArray();
 
+  // Get Comments on SSR
+  const comments = await db
+    .collection("comments")
+    .find()
+    .sort({ timestamp: -1 })
+    .toArray();
+
   // Get News API
   const results = await fetch(
     `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`
@@ -90,6 +97,12 @@ export async function getServerSideProps(context) {
         email: post.email,
         userImg: post.userImg,
         createdAt: post.createdAt,
+      })),
+      comments: comments.map((comment) => ({
+        _id: comment._id.toString(),
+        postId: comment.postId,
+        post: comment.post,
+        createdAt: comment.createdAt,
       })),
     },
   };

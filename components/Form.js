@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState } from "../atoms/modalAtom";
 import { handlePostState } from "../atoms/modalPost";
-// import { handlePostState } from "../atoms/postAtom";
 
 function Form() {
   const [input, setInput] = useState("");
@@ -31,7 +30,7 @@ function Form() {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
+    // console.log(responseData);
 
     setHandlePost(true);
     setModalOpen(false);

@@ -2,13 +2,61 @@ import { Avatar } from "@mui/material";
 import { useSession } from "next-auth/react";
 import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
 import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import CommentList from "./CommentList";
+import { handleCommentState, useSSRCommentsState } from "../../atoms/modalPost";
+import { useRecoilState } from "recoil";
 
-function Comment({ modalPost }) {
+function Comment({ modalPost, post, comments }) {
   const { data: session } = useSession();
-
   const [input, setInput] = useState("");
-  // const [photoUrl, setPhotoUrl] = useState("");
+  const [realtimeComments, setRealtimeComments] = useState([]);
+  const [useSSRComments, setUseSSRComments] =
+    useRecoilState(useSSRCommentsState);
+  const [handleComment, setHandleComment] = useRecoilState(handleCommentState);
+
+  const handleCommentPost = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("/api/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        post: post,
+        postId: post._id,
+        input: input,
+        username: session.user.name,
+        email: session.user.email,
+        userImg: session.user.image,
+        createdAt: new Date().toString(),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseData = await response.json();
+    // console.log(responseData);
+
+    setInput("");
+    setHandleComment(true);
+    // setModalOpen(false);
+  };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      const response = await fetch(`/api/comments/${post._id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const responseData = await response.json();
+      setRealtimeComments(responseData);
+      setHandleComment(false);
+      setUseSSRComments(false);
+    };
+
+    fetchComments();
+  }, [handleComment]);
 
   return (
     <>
@@ -36,38 +84,20 @@ function Comment({ modalPost }) {
           <button
             className="font-medium bg-blue-400 hover:bg-blue-500 text-sm text-black disabled:hidden rounded-full px-3.5 py-1"
             type="submit"
+            onClick={handleCommentPost}
             disabled={!input.trim()}
           >
             Post
           </button>
         </div>
       </div>
-      <div className="flex align-top mx-2.5 pt-1 text-black/60 dark:text-white/75">
-        <Avatar className="!h-10 !w-10 cursor-pointer my-2" />
-        <div className="flex-grow mr-auto ml-2 ">
-          <div className="dark:bg-gray-700 rounded-lg rounded-tl-none p-2 pl-2.5">
-            <div className="flex justify-between leading-none">
-              <div className="flex-grow ml-auto mr-2 text-sm leading-none">
-                <p>Name</p>
-                <p className="text-[12px]">
-                  Youtuber | Researcher | Developer | Story Teller
-                </p>
-              </div>
-              <div className="text-[12px]">
-                <span>timeago</span>
-                {/* <IconButton>
-                <MoreHorizRoundedIcon className="dark:text-white/75 h-7 w-7" />
-              </IconButton> */}
-              </div>
-            </div>
-            <div>comment message</div>
-          </div>
-          <div className="flex text-[12px] my-1 divide-x divide-gray-300">
-            <span className="cursor-pointer pr-2">Like</span>
-            <span className="cursor-pointer pl-2">Reply</span>
-          </div>
-        </div>
-      </div>
+      {!useSSRComments
+        ? realtimeComments.map((comment) => (
+            <CommentList key={comment._id} comment={comment} />
+          ))
+        : comments
+            .filter((obj) => obj.postId === post._id)
+            .map((obj) => <CommentList key={obj._id} comment={obj} />)}
     </>
   );
 }

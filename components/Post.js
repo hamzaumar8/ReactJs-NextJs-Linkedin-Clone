@@ -16,7 +16,7 @@ import TimeAgo from "timeago-react";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import Comment from "./Post/Comment";
 
-function Post({ post, modalPost }) {
+function Post({ post, modalPost, comments }) {
   const { data: session } = useSession();
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [modalType, setModalType] = useRecoilState(modalTypeState);
@@ -41,7 +41,7 @@ function Post({ post, modalPost }) {
   return (
     <div
       className={`bg-white dark:bg-[#1D2226] ${
-        modalPost ? "rounded-r-lg" : "rounded-lg"
+        modalPost ? "rounded-lg md:rounded-r-lg" : "rounded-lg"
       } space-y-2 py-2.5 border border-gray-300 dark:border-none transition ease-out`}
     >
       <div className="flex items-center px-2.5 cursor-pointer">
@@ -150,7 +150,7 @@ function Post({ post, modalPost }) {
       {/* {commentSec && <Comment />} */}
       {/* TODO:: overflow-y scrollable on modal pop up */}
       {modalPost && <Comment modalPost />}
-      {!modalPost && commentSec && <Comment />}
+      {!modalPost && commentSec && <Comment post={post} comments={comments} />}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import Input from "./Input";
 import Post from "./Post";
 // import Post from "./Post";
 
-function Feed({ posts }) {
+function Feed({ posts, comments }) {
   const [realtimePosts, setRealtimePosts] = useState([]);
   const [handlePost, setHandlePost] = useRecoilState(handlePostState);
   const [useSSRPosts, setUseSSRPosts] = useRecoilState(useSSRPostsState);
@@ -25,15 +25,20 @@ function Feed({ posts }) {
 
     fetchPosts();
   }, [handlePost]);
-  console.log(realtimePosts);
+
+  // console.log(realtimePosts);
 
   return (
     <div className="space-y-6 pb-24 max-w-lg">
       <Input />
       {/* Posts */}
       {!useSSRPosts
-        ? realtimePosts.map((post) => <Post key={post._id} post={post} />)
-        : posts.map((post) => <Post key={post._id} post={post} />)}
+        ? realtimePosts.map((post) => (
+            <Post key={post._id} post={post} comments={comments} />
+          ))
+        : posts.map((post) => (
+            <Post key={post._id} post={post} comments={comments} />
+          ))}
     </div>
   );
 }
