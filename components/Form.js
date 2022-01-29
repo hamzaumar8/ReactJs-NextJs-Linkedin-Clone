@@ -22,6 +22,7 @@ function Form() {
         username: session.user.name,
         email: session.user.email,
         userImg: session.user.image,
+        comments: [],
         createdAt: new Date().toString(),
       }),
       headers: {
